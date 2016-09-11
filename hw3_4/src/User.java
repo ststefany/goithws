@@ -24,12 +24,12 @@ public class User {
 
     }
 
-    //    withdraw(int summ) - takes money from the balance with 5% commision if summ < 1000 and 10% commision in other cases
+    //    withdraw(int sum) - takes money from the balance with 5% commission if sum < 1000 and 10% commision in other cases
     public void withdraw(int sum) {
         if (sum < 1000)
-            this.balance = this.balance - sum - this.balance * 0.05;
+            this.balance = this.balance - sum - sum * 0.05;
         else
-            this.balance = this.balance - sum - this.balance * 0.1;
+            this.balance = this.balance - sum - sum * 0.1;
     }
 
     //    monthIncrease(int addMonth) - increase monthsOfEmployment by addMonth
