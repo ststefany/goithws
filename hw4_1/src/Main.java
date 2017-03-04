@@ -132,7 +132,7 @@ public class Main  {
         bankSystem.fundUser(user6, 5000);
         bankSystem.transferMoney(user6, user3, 778443);
         bankSystem.paySalary(user6);
-        
+
     }
 
 }
