@@ -1,1 +1,2 @@
-public enum Currency {USD, UAH}
+public enum Currency { USD, UAH
+}

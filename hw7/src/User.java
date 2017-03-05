@@ -4,6 +4,7 @@ public class User {
     private String lastName;
     private String city;
     private int balance;
+    private enum Currency {USD, UAH};
 
     public User(long id, String firstName, String lastName, String city, int balance) {
         this.id = id;
