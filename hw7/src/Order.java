@@ -1,4 +1,4 @@
-public class Order {
+public class Order implements Comparable {
     private long id;
     private int price;
     private Currency currency;
@@ -93,9 +93,14 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                " " + price +
+                " " + price + currency +
                 ", shopIdentificator='" + shopIdentificator + '\'' +
                 ", user=" + user +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return o.hashCode()-hashCode();
     }
 }
