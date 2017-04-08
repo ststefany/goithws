@@ -1,6 +1,8 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -28,7 +30,6 @@ public class Main {
         Order order9 = new Order(187, 0, Currency.UAH, "Cola", "9", user9);
         Order order10 = new Order(18, 423, Currency.USD, "Pizza", "0", user10);
 
-        //- sort list by Order price in decrease order
         List<Order> list = new ArrayList<Order>();
         list.add(order1);
         list.add(order2);
@@ -41,99 +42,78 @@ public class Main {
         list.add(order9);
         list.add(order10);
 
-        list.sort(new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
-                if (o1.equals(o2)) return 0;
-                if (o1.getPrice() > o2.getPrice()) return -1;
-                if (o1.getPrice() < o2.getPrice()) return 1;
-                return 0;
-            }
-        });
+        System.out.println("List with items where price is not less than 1500: " + getPriceOver1500(list));
+        System.out.println("List with no duplicates: " + deleteDuplicates(list));
+        System.out.println("List without USD currency: " + deleteWhereUSD(list));
+        System.out.println("Lists by currency, USD: " + listByCurrency(list, Currency.USD) + " and UAH:" + listByCurrency(list, Currency.UAH));
+        System.out.println("Set of lists with orders in each unique city: ");
+        createCitieslists(list).forEach(System.out::println);
 
-        System.out.println(list);
-
-        //- sort list by Order price in increase order AND User city
-        list.sort(new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
-                if (o1.equals(o2)) return 0;
-                else if (o1.getPrice() != o2.getPrice()) return o1.getPrice() - o2.getPrice();
-                else return o1.getUser().getCity().compareTo(o2.getUser().getCity());
-            }
-        });
-
-        System.out.println(list);
+        System.out.println("List sorted by Order price in decrease order: " + getDecreaseOrder(list));
+        System.out.println("List sorted by Price in increasing order and User City: " + sortIncreasePriceAndCity(list));
+        System.out.println("List sorted by Item name, Shop identifier and User City: " + sortItemAndShop(list));
 
 
-        //- sort list by Order itemName AND ShopIdentificator AND User city
-        list.sort(new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
-                if (o1.equals(o2)) return 0;
-                else if (o1.getPrice() != o2.getPrice()) return o1.getPrice() - o2.getPrice();
-                else if (!o1.getShopIdentificator().equals(o2.getShopIdentificator()))
-                    return o1.getShopIdentificator().compareTo(o2.getShopIdentificator());
-                else return o1.getUser().getCity().compareTo(o2.getUser().getCity());
-            }
-        });
-
-
-        //- delete duplicates from the list
-
-        for (int i = 0; i < list.size(); i++)
-            if (list.indexOf(list.get(i)) - list.lastIndexOf(list.get(i)) != 0) list.remove(i);
-
-        System.out.println(list);
-
-        //- delete items where price less than 1500
-
-        for (int i = 0; i < list.size(); i++)
-            if (list.get(i).getPrice() < 1500) list.remove(i);
-
-        System.out.println(list);
-
-        //- separate list for two list - orders in USD and UAH
-        List<Order> ordersUSD = new ArrayList<>();
-        List<Order> ordersUAH = new ArrayList<>();
-
-        for (Order i : list)
-            if (i.getCurrency().equals(Currency.USD)) ordersUSD.add(i);
-            else ordersUAH.add(i);
-
-        System.out.println(ordersUAH);
-        System.out.println(ordersUSD);
-
-        //- separate list for as many lists as many unique cities are in User
-
-        for (Order o : list) {
-            if (isUnique(o.getUser(), list)) {
-                new ArrayList<Order>().add(o);
-                System.out.println(o);
-            } else {
-                System.out.println(oneCityOrders(o.getUser(), list));
-                new ArrayList<>().addAll(oneCityOrders(o.getUser(), list));
-            }
-            ;
-        }
 
     }
 
 
-    static boolean isUnique(User user, List<Order> list) {
-        int i = 0;
-        for (Order j : list)
-            if (user.getCity().equals(j.getUser().getCity())) i++;
-        if (i > 1) return false;
-        return true;
+    //- sort list by Order price in decrease order
+    private static List<Order> getDecreaseOrder(List<Order> list) {
+        return list.stream().sorted((Order o1, Order o2) -> o2.getPrice().compareTo(o1.getPrice())).collect(Collectors.toList());
     }
 
-    static ArrayList<Order> oneCityOrders(User user, List<Order> list) {
-        ArrayList<Order> temp = new ArrayList<Order>();
-        for (Order o : list)
-            if (temp.contains(o) && list.lastIndexOf(o) != list.size() - 1) break;
-            else if (user.getCity().equals(o.getUser().getCity())) temp.add(o);
-        return temp;
+
+    //- delete items where price less than 1500
+    private static List<Order> getPriceOver1500(List<Order> list) {
+        return list.stream().filter(n -> n.getPrice() >= 1500).collect(Collectors.toList());
     }
 
+    //- delete duplicates from the list
+    private static List<Order> deleteDuplicates(List<Order> list) {
+        return list.stream().distinct().collect(Collectors.toList());
+    }
+
+    //- delete orders where currency is USD
+    private static List<Order> deleteWhereUSD(List<Order> list) {
+        return list.stream().filter(o -> o.getCurrency() != Currency.USD).collect(Collectors.toList());
+    }
+
+    //- separate list for two list - orders in USD and UAH
+    private static List<Order> listByCurrency(List<Order> list, Currency currency) {
+        return list.stream().filter(o -> o.getCurrency() == currency).collect(Collectors.toList());
+    }
+
+    //- separate list for as many lists as many unique cities are in User
+    private static Set<List<Order>> createCitieslists(List<Order> list) {
+
+        Function<Order, List<Order>> f = (Order order) ->
+                list.stream()
+                        .filter((Order o) -> o.getUser().getCity().equals(order.getUser().getCity()))
+                        .collect(Collectors.toList());
+
+        return list.stream().map(f).collect(Collectors.toSet());
+    }
+
+    //- sort list by Order price in increase order AND User city
+    private static List<Order> sortIncreasePriceAndCity(List<Order> list) {
+        return list.stream().sorted((Order o1, Order o2) -> {
+                    if (o1.equals(o2)) return 0;
+                    else if (o1.getPrice() - o2.getPrice() != 0) return o1.getPrice().compareTo(o2.getPrice());
+                    else return o1.getUser().getCity().compareTo(o2.getUser().getCity());
+                }
+        ).collect(Collectors.toList());
+    }
+
+    //- sort list by Order itemName AND ShopIdentificator AND User city
+    private static List<Order> sortItemAndShop(List<Order> list) {
+        return list.stream().sorted((Order o1, Order o2) -> {
+            if (o1.equals(o2)) return 0;
+            else if (!o1.getItemName().equals(o2.getItemName())) return o1.getItemName().compareTo(o2.getItemName());
+            else if (!o1.getShopIdentificator().equals(o2.getShopIdentificator()))
+                return o1.getShopIdentificator().compareTo(o2.getShopIdentificator());
+            else return o1.getUser().getCity().compareTo(o2.getUser().getCity());
+        }).collect(Collectors.toList());
+    }
 }
+

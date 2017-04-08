@@ -51,16 +51,6 @@ public class Main2 {
         System.out.println(orders.size());
 
 
-        //- check if set contain Order where User’s lastName is - “Petrov”
-        boolean n = false;
-        for (Order o : orders)
-            if (o.getUser().getLastName().equals("Petrov"))
-                n = true;
-        if (n == true)
-            System.out.println("Petrov в наличии");
-        else System.out.println("Нет такого");
-
-
         //- print Order with largest price using only one set method - get
         int largestPrice = 0;
         for (Order o : orders) {
@@ -77,6 +67,12 @@ public class Main2 {
             if (iter.next().getCurrency() == Currency.USD) iter.remove();
 
         System.out.print(orders);
+        System.out.print(isPetrov(orders));
 
     }
+
+    //- check if set contain Order where User’s lastName is - “Petrov”
+    public static boolean isPetrov (Set<Order> set) {
+        return set.stream().anyMatch(o -> o.getUser().getLastName().equals("Petrov"));}
+
 }

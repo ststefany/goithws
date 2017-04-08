@@ -1,6 +1,6 @@
 public class Order implements Comparable {
     private long id;
-    private int price;
+    private Integer price;
     private Currency currency;
     private String itemName;
     private String shopIdentificator;
@@ -50,7 +50,7 @@ public class Order implements Comparable {
         this.id = id;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
@@ -92,10 +92,11 @@ public class Order implements Comparable {
 
     @Override
     public String toString() {
-        return "Order{" +
-                " " + price + currency +
+        return "Order {" +
+                price + " " + currency +
                 ", shopIdentificator='" + shopIdentificator + '\'' +
-                ", user=" + user +
+                ", " + user +
+                ", " + itemName +
                 '}';
     }
 

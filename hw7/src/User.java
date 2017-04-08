@@ -80,10 +80,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "Name='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", city='" + city + '\'' +
-                '}';
+        return firstName +" " + lastName +
+                ", from " + city + '\'';
     }
 }
