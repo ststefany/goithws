@@ -11,12 +11,13 @@ public class Main {
         map.put("3", "4");
         map.put("5", "6");
 
-        FileExt file = new FileExt("C:/Users/Scim/Desktop/file1.txt");
+        FileExt file = new FileExt("C:/Users/Scim/Desktop/file.txt");
 
         String s = file.replacer(map);
         System.out.println(s);
 
-
         file.fileContentReplacer(map);
+        file.fileContentMerger(map);
+        file.checkWord("6");
     }
 }
